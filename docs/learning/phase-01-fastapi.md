@@ -416,3 +416,156 @@ Test:
     TestClient
         ↓
     FastAPI
+
+
+
+
+## Testing & Code Quality — Key Lessons
+### Pytest
+
+Pytest discovers test files and test functions according to naming conventions.
+
+Typical structure:
+
+tests/
+    test_health.py
+    test_notes.py
+
+Typical test function:
+
+def test_something():
+    ...
+
+Run tests:
+
+    uv run pytest
+
+Verbose:
+
+    uv run pytest -v
+
+
+### TestClient
+
+FastAPI's TestClient allows us to test API endpoints without manually
+starting the production server.
+
+Example:
+
+    client = TestClient(app)
+
+    response = client.get("/health")
+
+
+### Assertions
+
+Tests verify expected behavior.
+
+Example:
+
+    assert response.status_code == 200
+    assert response.json() == {"status": "ok"}
+
+
+### Validation Testing
+
+Invalid input should be tested explicitly.
+
+Example:
+
+    {
+        "title": "",
+        "content": "test"
+    }
+
+Pydantic rejects invalid input before the endpoint's business logic
+should execute.
+
+For FastAPI validation failures, the typical HTTP status is:
+
+    422 Unprocessable Entity
+
+
+### Ruff
+
+Ruff provides:
+
+    ruff check .
+        → linting
+
+    ruff check --fix .
+        → automatically fix supported lint issues
+
+    ruff format .
+        → format Python files
+
+    ruff format --check .
+        → verify formatting without modifying files
+
+
+### pre-commit
+
+pre-commit runs configured checks before a Git commit.
+
+Install hooks:
+
+    uv run pre-commit install
+
+Run manually:
+
+    uv run pre-commit run --all-files
+
+Our current hooks:
+
+    Ruff lint
+    Ruff format
+
+Important distinction:
+
+    pre-commit
+        = local quality gate
+
+    GitHub Actions
+        = remote CI quality gate
+
+
+### Test Pyramid
+
+We will eventually have:
+
+    Unit tests
+        ↓
+    Service/repository tests
+        ↓
+    API/integration tests
+        ↓
+    End-to-end tests
+
+The project will gradually introduce these as the architecture becomes
+more sophisticated.
+
+
+
+## Application Configuration
+
+Never hard-code environment-specific configuration or secrets
+inside application source code.
+
+Use environment variables.
+
+Local:
+    .env
+
+Repository:
+    .env.example
+
+Production:
+    platform/environment secrets
+
+Flow:
+
+    Environment
+        ↓
+    Pydantic Settings
+        ↓
+    Application

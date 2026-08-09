@@ -25,3 +25,120 @@ uv run ruff format --check .
 
 Configuration:
     Stored in pyproject.toml.
+
+
+
+
+## pre-commit
+
+pre-commit is a Git hook framework.
+
+Purpose:
+    Automatically run quality checks before a commit.
+
+Install hooks:
+
+    uv run pre-commit install
+
+Run manually on all files:
+
+    uv run pre-commit run --all-files
+
+Typical flow:
+
+    git commit
+        ↓
+    pre-commit
+        ↓
+    lint / format / other checks
+        ↓
+    commit succeeds or is blocked
+
+Important distinction:
+
+pre-commit
+    = local protection
+
+GitHub Actions
+    = remote/CI protection
+
+git commit
+    │
+    ▼
+pre-commit
+    │
+    ├── Ruff lint
+    ├── Ruff format
+    └── other checks later
+    │
+    ▼
+Everything passes?
+   │
+ ┌─┴─┐
+YES   NO
+ │     │
+ ▼     ▼
+commit blocked
+
+
+
+
+## Git Core Workflow
+
+Check repository state:
+
+    git status
+
+See changes:
+
+    git diff
+
+Stage changes:
+
+    git add <file>
+
+Stage everything:
+
+    git add .
+
+See staged changes:
+
+    git diff --cached
+
+Create commit:
+
+    git commit -m "message"
+
+View history:
+
+    git log --oneline
+
+Working directory
+        ↓
+    git add
+        ↓
+Staging area
+        ↓
+   git commit
+        ↓
+Local repository
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

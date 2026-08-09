@@ -1,0 +1,27 @@
+## Ruff
+
+Ruff is a Python linter and formatter.
+
+Linting:
+    Finds code-quality problems, unused imports,
+    suspicious patterns, and other issues.
+
+Formatting:
+    Automatically applies a consistent code style.
+
+Important commands:
+
+uv run ruff check .
+    Run linting.
+
+uv run ruff check . --fix
+    Automatically fix supported lint issues.
+
+uv run ruff format .
+    Format Python files.
+
+uv run ruff format --check .
+    Check formatting without modifying files.
+
+Configuration:
+    Stored in pyproject.toml.

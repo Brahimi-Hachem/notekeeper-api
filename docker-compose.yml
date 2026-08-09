@@ -1,0 +1,16 @@
+services:
+  postgres:
+    image: postgres:17
+    container_name: notekeeper-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: notekeeper
+      POSTGRES_USER: notekeeper
+      POSTGRES_PASSWORD: notekeeper_dev
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:

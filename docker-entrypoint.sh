@@ -8,9 +8,9 @@ fi
 
 echo 'Waiting for database to be available...'
 
-until python -c "from sqlalchemy import create_engine; import os; engine=create_engine(os.environ['DATABASE_URL']); engine.connect(); print('db ok')" >/dev/null 2>&1; do
-    printf '.'
-    sleep 1
+until python -c "from sqlalchemy import create_engine; import os; engine=create_engine(os.environ['DATABASE_URL']); engine.connect(); print('db ok')"; do
+    echo "Database connection failed. Retrying..."
+    sleep 2
 done
 
 echo 'Applying database migrations...'

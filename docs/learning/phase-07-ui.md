@@ -5,6 +5,8 @@ Build a simple user interface for the NoteKeeper API and optionally provide a co
 
 ## Option 1: Streamlit web UI
 
+The Streamlit UI now lives in a separate repository, `notekeeper-ui`.
+
 This is the fastest path to a GUI:
 
 - Streamlit is Python-native and easy to connect to the existing API.

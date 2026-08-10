@@ -2,6 +2,8 @@
 
 NoteKeeper API is a production-oriented FastAPI backend for personal notes and user-scoped knowledge storage. It includes authentication, PostgreSQL persistence, SQLAlchemy 2.x models, Alembic migrations, Docker Compose development, and automated tests.
 
+> The Streamlit UI has been moved to a separate repository: `notekeeper-ui`.
+
 ## Features
 
 - User registration and login
@@ -95,6 +97,8 @@ docker compose up --build
 - http://127.0.0.1:8000/docs
 
 The `web` container waits for PostgreSQL and runs Alembic migrations automatically before starting the FastAPI server.
+
+> The Streamlit UI has been moved to a separate repository: `notekeeper-ui`.
 
 ### Environment variables
 

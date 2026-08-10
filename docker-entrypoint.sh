@@ -1,20 +1,20 @@
 #!/bin/sh
 set -e
 
-if [ "$DATABASE_URL" = "" ] || [ -z "$DATABASE_URL" ]; then
-  echo 'ERROR: DATABASE_URL is not set.'
-  exit 1
+if [ -z "$DATABASE_URL" ]; then
+    echo 'ERROR: DATABASE_URL is not set.'
+    exit 1
 fi
 
 echo 'Waiting for database to be available...'
 
 until python -c "from sqlalchemy import create_engine; import os; engine=create_engine(os.environ['DATABASE_URL']); engine.connect(); print('db ok')" >/dev/null 2>&1; do
-  printf '.'
-  sleep 1
+    printf '.'
+    sleep 1
 done
 
 echo 'Applying database migrations...'
 uv run alembic upgrade head
 
 echo 'Starting Uvicorn...'
-exec uv run uvicorn app.main:app --host 0.0.0.0 --port 8000
+exec uv run uvicorn app.main:app --host 0.0.0.0 --port "$PORT"

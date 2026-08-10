@@ -1,0 +1,27 @@
+services:
+  - type: web
+    name: notekeeper-api
+    env: docker
+    plan: free
+    branch: main
+    autoDeploy: true
+    dockerfilePath: Dockerfile
+    envVars:
+      - key: JWT_ALGORITHM
+        value: HS256
+      - key: ACCESS_TOKEN_EXPIRE_MINUTES
+        value: 30
+
+  - type: worker
+    name: notekeeper-migrations
+    env: docker
+    plan: free
+    branch: main
+    autoDeploy: true
+    dockerfilePath: Dockerfile
+    command: uv run alembic upgrade head
+
+databases:
+  - name: notekeeper-db
+    databaseName: notekeeper
+    plan: free

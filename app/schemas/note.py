@@ -6,6 +6,11 @@ class NoteCreate(BaseModel):
     content: str = Field(min_length=1)
 
 
+class NoteUpdate(BaseModel):
+    title: str = Field(min_length=1, max_length=200)
+    content: str = Field(min_length=1)
+
+
 class NoteResponse(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 

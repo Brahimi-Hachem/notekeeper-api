@@ -9,7 +9,7 @@ from sqlalchemy.orm import Session, sessionmaker
 
 from app.core.config import settings
 from app.db.base import Base
-from app.db.models import Note
+from app.db.models import Note, User
 from app.db.session import get_db
 from app.main import app
 
@@ -53,7 +53,12 @@ def test_engine() -> Generator[Engine, None, None]:
     database_url = get_test_database_url()
     create_test_database(database_url)
     engine = create_engine(database_url, pool_pre_ping=True)
-    Base.metadata.create_all(bind=engine, tables=[Note.__table__])
+
+    Base.metadata.create_all(
+        bind=engine,
+        tables=[User.__table__, Note.__table__],
+    )
+
     yield engine
     engine.dispose()
 
@@ -68,9 +73,38 @@ def client(test_engine: Engine) -> Generator[TestClient, None, None]:
         yield test_session
 
     app.dependency_overrides[get_db] = override_get_db
+
     with TestClient(app) as test_client:
         yield test_client
+
     app.dependency_overrides.pop(get_db)
     test_session.close()
     transaction.rollback()
     connection.close()
+
+
+@pytest.fixture
+def auth_headers(client: TestClient) -> dict[str, str]:
+    register_response = client.post(
+        "/auth/register",
+        json={
+            "email": "test@example.com",
+            "password": "password123",
+        },
+    )
+
+    assert register_response.status_code == 201
+
+    login_response = client.post(
+        "/auth/login",
+        json={
+            "email": "test@example.com",
+            "password": "password123",
+        },
+    )
+
+    assert login_response.status_code == 200
+
+    token = login_response.json()["access_token"]
+
+    return {"Authorization": f"Bearer {token}"}

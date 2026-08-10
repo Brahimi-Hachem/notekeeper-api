@@ -14,7 +14,7 @@ until python -c "from sqlalchemy import create_engine; import os; engine=create_
 done
 
 echo 'Applying database migrations...'
-uv run alembic upgrade head
+alembic upgrade head
 
 echo 'Starting Uvicorn...'
-exec uv run uvicorn app.main:app --host 0.0.0.0 --port "$PORT"
+exec uvicorn app.main:app --host 0.0.0.0 --port "$PORT"

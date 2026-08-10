@@ -1,12 +1,12 @@
 from datetime import timedelta
 from typing import Annotated
 
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, Request, status
 from sqlalchemy.orm import Session
 
 from app.core.security import create_access_token
 from app.db.session import get_db
-from app.schemas.auth import Token, UserCreate, UserLogin, UserResponse
+from app.schemas.auth import Token, UserCreate, UserResponse
 from app.services.auth import (
     authenticate_user,
     create_user,
@@ -49,14 +49,31 @@ def register(
     "/login",
     response_model=Token,
 )
-def login(
-    user_data: UserLogin,
+async def login(
+    request: Request,
     db: Annotated[Session, Depends(get_db)],
 ):
+    if request.headers.get("content-type", "").startswith(
+        "application/x-www-form-urlencoded"
+    ):
+        form = await request.form()
+        username = form.get("username")
+        password = form.get("password")
+    else:
+        body = await request.json()
+        username = body.get("email")
+        password = body.get("password")
+
+    if not username or not password:
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            detail="Email and password are required.",
+        )
+
     user = authenticate_user(
         db,
-        user_data.email,
-        user_data.password,
+        username,
+        password,
     )
 
     if not user:
